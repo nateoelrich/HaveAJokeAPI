@@ -36,12 +36,15 @@ public class DadJokeRepositoryTests
     [Test]
     public async Task GivenSuccessStatusCode_GetRandom_ShouldReturnRandomJoke()
     {
+        // Arrange
         using var client = new HttpTest();
 
         client.RespondWith(JsonSerializer.Serialize(_defaultJoke)); // <- default status is 200
-
-        await _repository.GetRandomJoke();
-
+        
+        // Act
+        await _repository.GetRandomJokeAsync();
+        
+        // Assert
         client.ShouldHaveCalled(_configuration.BaseUrl)
             .WithHeader("Accept", _configuration.AcceptHeader)
             .WithVerb(HttpMethod.Get)
@@ -51,6 +54,7 @@ public class DadJokeRepositoryTests
     [Test]
     public async Task GivenNonSuccessStatusCode_GetRandom_ShouldReturnNull()
     {
+        // Arrange
         using var client = new HttpTest();
 
         var badJoke = new Joke()
@@ -62,8 +66,9 @@ public class DadJokeRepositoryTests
 
         client.RespondWith(JsonSerializer.Serialize(badJoke));
 
-        var result = await _repository.GetRandomJoke();
+        var result = await _repository.GetRandomJokeAsync();
 
+        // Act
         client.ShouldHaveCalled(_configuration.BaseUrl)
             .WithHeader("Accept", _configuration.AcceptHeader)
             .WithVerb(HttpMethod.Get)
@@ -75,12 +80,15 @@ public class DadJokeRepositoryTests
     [Test]
     public async Task GivenApiDependencyFailure_GetRandom_ShouldReturnNull()
     {
+        // Arrange
         using var client = new HttpTest();
 
         client.SimulateTimeout();
 
-        var result = await _repository.GetRandomJoke();
+        // Act
+        var result = await _repository.GetRandomJokeAsync();
 
+        // Assert
         client.ShouldHaveCalled(_configuration.BaseUrl)
             .WithHeader("Accept", _configuration.AcceptHeader)
             .WithVerb(HttpMethod.Get)
@@ -92,7 +100,27 @@ public class DadJokeRepositoryTests
     [Test]
     public async Task GivenSuccessStatusCode_Search_ShouldReturnListOfJokes()
     {
-        throw new NotImplementedException();
+        // Arrange
+        using var client = new HttpTest();
+
+        var badJoke = new Joke()
+        {
+            Id = string.Empty,
+            Text = string.Empty,
+            Status = 500
+        };
+
+        client.RespondWith(JsonSerializer.Serialize(badJoke));
+
+        var result = await _repository.GetRandomJokeAsync();
+
+        // Act
+        client.ShouldHaveCalled(_configuration.BaseUrl)
+            .WithHeader("Accept", _configuration.AcceptHeader)
+            .WithVerb(HttpMethod.Get)
+            .Times(1);
+
+        result.ShouldBeNull();
     }
     
     [Test]

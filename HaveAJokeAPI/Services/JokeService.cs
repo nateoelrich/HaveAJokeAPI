@@ -35,7 +35,7 @@ public class JokeService : IJokeService
     /// <exception cref="JokeNotFoundException">When no joke is found</exception>
     public async Task<JokeResponse> GetRandomJokeAsync()
     {
-        var joke = await _repository.GetRandomJoke();
+        var joke = await _repository.GetRandomJokeAsync();
 
         if (joke == null)
         {

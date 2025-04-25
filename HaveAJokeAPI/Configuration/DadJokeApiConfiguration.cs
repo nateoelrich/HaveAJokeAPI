@@ -2,6 +2,6 @@ namespace HaveAJokeAPI.Configuration;
 
 public class DadJokeApiConfiguration
 {
-    public string BaseUrl { get; set; }
-    public string AcceptHeader { get; set; } = "application/json";
+    public required string BaseUrl { get; init; }
+    public string AcceptHeader { get; init; } = "application/json";
 }

@@ -5,8 +5,8 @@ using HaveAJokeAPI.Models;
 namespace HaveAJokeAPI.Repositories;
 public interface IDadJokeRepository
 {
-    Task<Joke?> GetRandomJoke();
-    Task<ICollection<Joke>>  SearchJokes(string jokeToken);
+    Task<Joke?> GetRandomJokeAsync();
+    Task<ICollection<Joke>>  SearchJokesAsync(string jokeToken);
 }
 
 public class DadJokeRepository : IDadJokeRepository
@@ -18,7 +18,7 @@ public class DadJokeRepository : IDadJokeRepository
         _apiConfiguration = apiConfiguration;
     }
     
-    public async Task<Joke?> GetRandomJoke()
+    public async Task<Joke?> GetRandomJokeAsync()
     {
         try
         {
@@ -42,7 +42,7 @@ public class DadJokeRepository : IDadJokeRepository
         }
     }
 
-    public Task<ICollection<Joke>> SearchJokes(string jokeToken)
+    public Task<ICollection<Joke>> SearchJokesAsync(string jokeToken)
     {
         throw new NotImplementedException();
     }
