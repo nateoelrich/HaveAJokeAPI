@@ -3,5 +3,6 @@
 /HaveAJokeAPI.Tests/bin/
 /HaveAJokeAPI.Tests/obj/
 
-/obj/
-/bin/
+obj
+bin
+.idea

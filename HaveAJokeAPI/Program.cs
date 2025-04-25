@@ -1,8 +1,6 @@
 using HaveAJokeAPI.Configuration;
 using HaveAJokeAPI.Repositories;
-using HaveAJokeAPI.Responses;
 using HaveAJokeAPI.Services;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
