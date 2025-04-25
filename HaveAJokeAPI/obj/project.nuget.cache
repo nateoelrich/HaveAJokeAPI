@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "uL3eI2XGol4=",
+  "dgSpecHash": "9omJg3N3AhY=",
   "success": true,
   "projectFilePath": "/Users/nateoelrich/RiderProjects/HaveAJokeAPI/HaveAJokeAPI/HaveAJokeAPI.csproj",
   "expectedPackageFiles": [
+    "/Users/nateoelrich/.nuget/packages/flurl/4.0.0/flurl.4.0.0.nupkg.sha512",
+    "/Users/nateoelrich/.nuget/packages/flurl.http/4.0.2/flurl.http.4.0.2.nupkg.sha512",
     "/Users/nateoelrich/.nuget/packages/microsoft.aspnetcore.openapi/8.0.8/microsoft.aspnetcore.openapi.8.0.8.nupkg.sha512",
     "/Users/nateoelrich/.nuget/packages/microsoft.extensions.apidescription.server/6.0.5/microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "/Users/nateoelrich/.nuget/packages/microsoft.openapi/1.4.3/microsoft.openapi.1.4.3.nupkg.sha512",

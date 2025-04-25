@@ -7,7 +7,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Flurl" Version="4.0.0" />
+      <PackageReference Include="Flurl.Http" Version="4.0.2" />
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0-preview-25107-01" />
       <PackageReference Include="NUnit" Version="4.3.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\HaveAJokeAPI\HaveAJokeAPI.csproj" />
     </ItemGroup>
 
 </Project>
