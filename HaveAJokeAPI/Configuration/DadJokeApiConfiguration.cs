@@ -3,5 +3,7 @@ namespace HaveAJokeAPI.Configuration;
 public class DadJokeApiConfiguration
 {
     public required string BaseUrl { get; init; }
-    public string AcceptHeader { get; init; } = "application/json";
+    public string AcceptHeaderValue { get; init; } = "application/json";
+    
+    public string SearchEndpoint { get; } = "/search";
 }

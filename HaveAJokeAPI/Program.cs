@@ -37,10 +37,32 @@ app.UseHttpsRedirection();
 
 app.MapGet("/random", async ([FromKeyedServices("joke-service")] IJokeService jokeService) =>
     {
-        var joke = await jokeService.GetRandomJokeAsync();
-        return Results.Ok(joke);
+        try
+        {
+            var joke = await jokeService.GetRandomJokeAsync();
+            return Results.Ok(joke);
+        }
+        catch (Exception ex)
+        {
+            return Results.Problem(ex.Message);
+        }
     })
     .WithName("RandomJoke")
+    .WithOpenApi();
+
+app.MapGet("/search", async ([FromKeyedServices("joke-service")] IJokeService jokeService) =>
+    {
+        try
+        {
+            var jokes = await jokeService.SearchJokesAsync(1,30, "man bar");
+            return Results.Ok(jokes);
+        }
+        catch (Exception ex)
+        {
+            return Results.Problem(ex.Message);
+        }
+    })
+    .WithName("SearchJokes")
     .WithOpenApi();
 
 app.Run();

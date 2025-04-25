@@ -21,7 +21,7 @@ public class DadJokeRepositoryTests
         _configuration = new DadJokeApiConfiguration()
         {
             BaseUrl = "http://hihungry.com/imdad",
-            AcceptHeader = "application/json",
+            AcceptHeaderValue = "application/json",
         };
         
         _repository = new DadJokeRepository(_configuration);
@@ -46,7 +46,7 @@ public class DadJokeRepositoryTests
         
         // Assert
         client.ShouldHaveCalled(_configuration.BaseUrl)
-            .WithHeader("Accept", _configuration.AcceptHeader)
+            .WithHeader("Accept", _configuration.AcceptHeaderValue)
             .WithVerb(HttpMethod.Get)
             .Times(1);
     }
@@ -70,7 +70,7 @@ public class DadJokeRepositoryTests
 
         // Act
         client.ShouldHaveCalled(_configuration.BaseUrl)
-            .WithHeader("Accept", _configuration.AcceptHeader)
+            .WithHeader("Accept", _configuration.AcceptHeaderValue)
             .WithVerb(HttpMethod.Get)
             .Times(1);
 
@@ -90,7 +90,7 @@ public class DadJokeRepositoryTests
 
         // Assert
         client.ShouldHaveCalled(_configuration.BaseUrl)
-            .WithHeader("Accept", _configuration.AcceptHeader)
+            .WithHeader("Accept", _configuration.AcceptHeaderValue)
             .WithVerb(HttpMethod.Get)
             .Times(1);
         
@@ -103,29 +103,57 @@ public class DadJokeRepositoryTests
         // Arrange
         using var client = new HttpTest();
 
-        var badJoke = new Joke()
+        var mahJoken = "man bar";
+
+        var searchResponse = new DadJokeApiSearchResponse()
         {
-            Id = string.Empty,
-            Text = string.Empty,
-            Status = 500
+            Status = 200,
+            Results = new List<Joke>()
+            {
+                new()
+                {
+                    Text = "A man walks into a bar...the end"
+                },
+            }
         };
 
-        client.RespondWith(JsonSerializer.Serialize(badJoke));
+        client.RespondWith(JsonSerializer.Serialize(searchResponse));
 
-        var result = await _repository.GetRandomJokeAsync();
+        var result = await _repository.SearchJokesAsync(1,2, mahJoken);
 
         // Act
-        client.ShouldHaveCalled(_configuration.BaseUrl)
-            .WithHeader("Accept", _configuration.AcceptHeader)
+        client.ShouldHaveCalled($"{_configuration.BaseUrl}{_configuration.SearchEndpoint}")
+            .WithHeader("Accept", _configuration.AcceptHeaderValue)
+            .WithVerb(HttpMethod.Get)
+            .Times(1);
+
+        result.ShouldNotBeNull();
+        result.Count.ShouldBe(1);
+    }
+    
+    [Test]
+    public async Task GivenNonSuccessStatusCode_Search_ShouldReturnNull()
+    {
+        // Arrange
+        using var client = new HttpTest();
+
+        var mahJoken = "man bar";
+
+        var searchResponse = new DadJokeApiSearchResponse()
+        {
+            Status = 500,
+        };
+
+        client.RespondWith(JsonSerializer.Serialize(searchResponse));
+
+        var result = await _repository.SearchJokesAsync(1,2, mahJoken);
+
+        // Act
+        client.ShouldHaveCalled($"{_configuration.BaseUrl}{_configuration.SearchEndpoint}")
+            .WithHeader("Accept", _configuration.AcceptHeaderValue)
             .WithVerb(HttpMethod.Get)
             .Times(1);
 
         result.ShouldBeNull();
-    }
-    
-    [Test]
-    public async Task GivenNonSuccessStatusCode_Search_ShouldReturnRandomJoke()
-    {
-        throw new NotImplementedException();
     }
 }

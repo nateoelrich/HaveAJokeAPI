@@ -8,6 +8,8 @@ namespace HaveAJokeAPI.Services;
 public interface IJokeService
 {
     Task<JokeResponse> GetRandomJokeAsync();
+    
+    Task<List<JokeResponse>> SearchJokesAsync(int page, int limit, string token);
 }
 
 /// <summary>
@@ -43,6 +45,29 @@ public class JokeService : IJokeService
         }
         
         return JokeResponse(joke);
+    }
+
+    public async Task<List<JokeResponse>> SearchJokesAsync(int page, int limit, string token)
+    {
+        var jokes = await _repository.SearchJokesAsync(page, limit, token);
+
+        if (jokes == null)
+        {
+            throw new JokeNotFoundException("try again later!");
+        }
+        
+        return CategorizeJokes(jokes);
+    }
+
+    private List<JokeResponse> CategorizeJokes(ICollection<Joke> jokes)
+    {
+        // TODO: add all the sorting and token highlight here
+        var jokies = new List<JokeResponse>();
+        foreach (var joke in jokes)
+        {
+            jokies.Add(JokeResponse(joke));
+        }
+        return jokies;
     }
 
     /// <summary>

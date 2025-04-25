@@ -6,26 +6,19 @@ namespace HaveAJokeAPI.Repositories;
 public interface IDadJokeRepository
 {
     Task<Joke?> GetRandomJokeAsync();
-    Task<ICollection<Joke>>  SearchJokesAsync(string jokeToken);
+    Task<ICollection<Joke>?>  SearchJokesAsync(int page, int limit, string term);
 }
 
-public class DadJokeRepository : IDadJokeRepository
+public class DadJokeRepository(DadJokeApiConfiguration apiConfiguration) : IDadJokeRepository
 {
-    private readonly DadJokeApiConfiguration _apiConfiguration;
-
-    public DadJokeRepository(DadJokeApiConfiguration apiConfiguration)
-    {
-        _apiConfiguration = apiConfiguration;
-    }
-    
     public async Task<Joke?> GetRandomJokeAsync()
     {
         try
         {
             Joke? joke = null;
             
-            var result = await _apiConfiguration.BaseUrl
-                .WithHeader("Accept", _apiConfiguration.AcceptHeader)
+            var result = await apiConfiguration.BaseUrl
+                .WithHeader("Accept", apiConfiguration.AcceptHeaderValue)
                 .GetJsonAsync<Joke>();
 
             if (result != null)
@@ -33,7 +26,7 @@ public class DadJokeRepository : IDadJokeRepository
                 joke = result;
             }
 
-            return joke!.Status != 200 ? null : joke;
+            return joke != null && joke.Status != 200 ? null : joke;
         }
         catch (Exception ex)
         {
@@ -42,8 +35,34 @@ public class DadJokeRepository : IDadJokeRepository
         }
     }
 
-    public Task<ICollection<Joke>> SearchJokesAsync(string jokeToken)
+    public async Task<ICollection<Joke>?> SearchJokesAsync(int page, int limit, string term)
     {
-        throw new NotImplementedException();
+        try
+        {
+            DadJokeApiSearchResponse? searchResponse = null;
+
+            var url = $"{apiConfiguration.BaseUrl}/search?page={page}&limit={limit}&term={term}";
+            
+            var result = await url
+                    .WithHeader("Accept", apiConfiguration.AcceptHeaderValue)
+                    .GetJsonAsync<DadJokeApiSearchResponse>();
+
+            if (result != null)
+            {
+                searchResponse = result;
+            }
+
+            if (searchResponse != null && searchResponse.Status == 200)
+            {
+                return searchResponse.Results;
+            }
+            
+            return null;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            return null;
+        }
     }
 }
