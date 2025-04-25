@@ -29,7 +29,7 @@ public class DadJokeRepositoryTests
         {
             Id = "'mclovin",
             Text = "Why are pigs bad drivers? ...`cause they hog the road!",
-            Status = "200"
+            Status = 200
         };
     }
     
@@ -57,7 +57,7 @@ public class DadJokeRepositoryTests
         {
             Id = string.Empty,
             Text = string.Empty,
-            Status = "500"
+            Status = 500
         };
 
         client.RespondWith(JsonSerializer.Serialize(badJoke));

@@ -1,9 +1,28 @@
+using HaveAJokeAPI.Configuration;
+using HaveAJokeAPI.Repositories;
+using HaveAJokeAPI.Responses;
+using HaveAJokeAPI.Services;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// bind config
+
+var apiConfig = builder.Configuration
+    .GetSection(nameof(DadJokeApiConfiguration))
+    .Get<DadJokeApiConfiguration>();
+
+if (apiConfig != null)
+{
+    builder.Services.AddSingleton(apiConfig);
+}
+builder.Services.AddTransient<IDadJokeRepository, DadJokeRepository>();
+builder.Services.AddKeyedTransient<IJokeService, JokeService>("joke-service");
 
 var app = builder.Build();
 
@@ -16,29 +35,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
+app.MapGet("/random", async ([FromKeyedServices("joke-service")] IJokeService jokeService) =>
     {
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .ToArray();
-        return forecast;
+        var joke = await jokeService.GetRandomJokeAsync();
+        return Results.Ok(joke);
     })
-    .WithName("GetWeatherForecast")
+    .WithName("RandomJoke")
     .WithOpenApi();
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

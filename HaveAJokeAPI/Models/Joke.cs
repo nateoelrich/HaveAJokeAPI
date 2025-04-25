@@ -11,5 +11,5 @@ public record Joke()
     public string Text { get; set; }
     
     [JsonPropertyName("status")]
-    public string Status { get; set; }
+    public int Status { get; set; }
 }
