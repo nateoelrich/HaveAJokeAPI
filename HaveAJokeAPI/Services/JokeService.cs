@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using HaveAJokeAPI.Exceptions;
 using HaveAJokeAPI.Models;
 using HaveAJokeAPI.Repositories;
@@ -17,6 +18,7 @@ public interface IJokeService
 public class JokeService : IJokeService
 {
     private readonly IDadJokeRepository _repository;
+    private static readonly Regex WordPattern = new(@"\w+", RegexOptions.Compiled);
 
     /// <summary>
     /// Inits a JokeService
@@ -53,18 +55,61 @@ public class JokeService : IJokeService
             throw new JokeNotFoundException("try again later!");
         }
 
-        return CategorizeJokes(jokes);
+        return TransformJokes(jokes, token.Split(" "));
     }
 
-    private List<Joke> CategorizeJokes(ICollection<Joke> jokes)
+    private List<Joke> TransformJokes(ICollection<Joke> jokes, ICollection<string> tokens)
     {
-        // TODO: add all the sorting and token highlight here
-        var jokies = new List<Joke>();
-        foreach (var joke in jokes)
-        {
-            jokies.Add(joke);
-        }
-
-        return jokies;
+        var tokenizedJokes = TokenizeJokes(jokes, tokens);
+        return GroupByLength(tokenizedJokes);
     }
+
+    private object TokenizeJokes(ICollection<Joke> jokes, ICollection<string> searchTokens)
+    { 
+        if (jokes == null || searchTokens == null)
+            return jokes;
+
+        // Normalize search terms for case-insensitive comparison
+        var searchSet = new HashSet<string>(
+            searchTokens.Select(term => term.ToLowerInvariant())
+        );
+
+        var wordPattern = new Regex(@"\w+", RegexOptions.Compiled);
+
+        return jokes.Select(j =>
+        {
+            // Replace words if they match any search term
+            return wordPattern.Replace(j.Text, match =>
+            {
+                var word = match.Value;
+                return searchSet.Contains(word.ToLowerInvariant()) ? $"{word.ToUpper()}" : word;
+            });
+        }).ToList();
+    }
+    
+    private static Dictionary<LengthCategory, List<string>> GroupByLength(List<string> strings)
+    {
+        return strings.GroupBy(GetLengthCategory)
+            .ToDictionary(g => g.Key, g => g.ToList());
+    }
+
+    private static LengthCategory GetLengthCategory(string input)
+    {
+        var wordCount = WordPattern.Matches(input).Count;
+
+        return wordCount switch
+        {
+            < 10 => LengthCategory.Short,
+            < 20 => LengthCategory.Medium,
+            _ => LengthCategory.Long
+        };
+    }
+    
+    public enum LengthCategory
+    {
+        Short,
+        Medium,
+        Long
+    }
+
 }
