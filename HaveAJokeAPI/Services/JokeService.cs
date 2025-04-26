@@ -9,7 +9,7 @@ public interface IJokeService
 {
     Task<Joke> GetRandomJokeAsync();
     
-    Task<List<Joke>> SearchJokesAsync(int page, int limit, string token);
+    Task<Dictionary<JokeService.LengthCategory, List<string>>> SearchJokesAsync(int page, int limit, string token);
 }
 
 /// <summary>
@@ -46,7 +46,7 @@ public class JokeService : IJokeService
         return joke;
     }
 
-    public async Task<List<Joke>> SearchJokesAsync(int page, int limit, string token)
+    public async Task<Dictionary<LengthCategory, List<string>>> SearchJokesAsync(int page, int limit, string token)
     {
         var jokes = await _repository.SearchJokesAsync(page, limit, token);
 
@@ -58,17 +58,14 @@ public class JokeService : IJokeService
         return TransformJokes(jokes, token.Split(" "));
     }
 
-    private List<Joke> TransformJokes(ICollection<Joke> jokes, ICollection<string> tokens)
+    private  Dictionary<LengthCategory, List<string>> TransformJokes(ICollection<Joke> jokes, ICollection<string> tokens)
     {
         var tokenizedJokes = TokenizeJokes(jokes, tokens);
         return GroupByLength(tokenizedJokes);
     }
 
-    private object TokenizeJokes(ICollection<Joke> jokes, ICollection<string> searchTokens)
-    { 
-        if (jokes == null || searchTokens == null)
-            return jokes;
-
+    private List<string> TokenizeJokes(ICollection<Joke> jokes, ICollection<string> searchTokens)
+    {
         // Normalize search terms for case-insensitive comparison
         var searchSet = new HashSet<string>(
             searchTokens.Select(term => term.ToLowerInvariant())
