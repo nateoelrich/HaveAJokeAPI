@@ -1,10 +1,8 @@
-/HaveAJokeAPI/bin/
-/HaveAJokeAPI/obj/
-/HaveAJokeAPI/bin/Debug
+/HaveAJokeAPI/bin
+/HaveAJokeAPI/obj
 /HaveAJokeAPI/obj/Debug
-/HaveAJokeAPI.Tests/bin/
-/HaveAJokeAPI.Tests/obj/
-/HaveAJokeAPI.Tests/bin/Debug
+/HaveAJokeAPI.Tests/bin
+/HaveAJokeAPI.Tests/obj
 /HaveAJokeAPI.Tests/obj/Debug
 
 obj
