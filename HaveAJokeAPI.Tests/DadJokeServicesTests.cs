@@ -59,9 +59,10 @@ public class DadJokeServicesTests
     public async Task GivenNonNullResponse_Search_ShouldReturnTokenizedJoke()
     {
         // Arrange
-        
+        var somejokkes = new Dictionary<JokeLengthCategory, List<string>>();
+
         // Act
-        
+
         // Assert
     }
     
