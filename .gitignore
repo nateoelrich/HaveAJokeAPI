@@ -1,7 +1,11 @@
 /HaveAJokeAPI/bin/
 /HaveAJokeAPI/obj/
+/HaveAJokeAPI/bin/Debug
+/HaveAJokeAPI/obj/Debug
 /HaveAJokeAPI.Tests/bin/
 /HaveAJokeAPI.Tests/obj/
+/HaveAJokeAPI.Tests/bin/Debug
+/HaveAJokeAPI.Tests/obj/Debug
 
 obj
 bin
