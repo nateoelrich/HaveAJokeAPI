@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using HaveAJokeAPI.Exceptions;
+using HaveAJokeAPI.Helpers;
 using HaveAJokeAPI.Models;
 using HaveAJokeAPI.Repositories;
 
@@ -9,7 +10,7 @@ public interface IJokeService
 {
     Task<Joke> GetRandomJokeAsync();
     
-    Task<Dictionary<JokeService.LengthCategory, List<string>>> SearchJokesAsync(int page, int limit, string token);
+    Task<Dictionary<JokeLengthCategory, List<string>>> SearchJokesAsync(int page, int limit, string token);
 }
 
 /// <summary>
@@ -18,7 +19,6 @@ public interface IJokeService
 public class JokeService : IJokeService
 {
     private readonly IDadJokeRepository _repository;
-    private static readonly Regex WordPattern = new(@"\w+", RegexOptions.Compiled);
 
     /// <summary>
     /// Inits a JokeService
@@ -46,7 +46,7 @@ public class JokeService : IJokeService
         return joke;
     }
 
-    public async Task<Dictionary<LengthCategory, List<string>>> SearchJokesAsync(int page, int limit, string token)
+    public async Task<Dictionary<JokeLengthCategory, List<string>>> SearchJokesAsync(int page, int limit, string token)
     {
         var jokes = await _repository.SearchJokesAsync(page, limit, token);
 
@@ -55,58 +55,6 @@ public class JokeService : IJokeService
             throw new JokeNotFoundException("try again later!");
         }
 
-        return TransformJokes(jokes, token.Split(" "));
+        return JokeTokenizer.TransformJokes(jokes, token.Split(" "));
     }
-
-    private  Dictionary<LengthCategory, List<string>> TransformJokes(ICollection<Joke> jokes, ICollection<string> tokens)
-    {
-        var tokenizedJokes = TokenizeJokes(jokes, tokens);
-        return GroupByLength(tokenizedJokes);
-    }
-
-    private List<string> TokenizeJokes(ICollection<Joke> jokes, ICollection<string> searchTokens)
-    {
-        // Normalize search terms for case-insensitive comparison
-        var searchSet = new HashSet<string>(
-            searchTokens.Select(term => term.ToLowerInvariant())
-        );
-
-        var wordPattern = new Regex(@"\w+", RegexOptions.Compiled);
-
-        return jokes.Select(j =>
-        {
-            // Replace words if they match any search term
-            return wordPattern.Replace(j.Text, match =>
-            {
-                var word = match.Value;
-                return searchSet.Contains(word.ToLowerInvariant()) ? $"{word.ToUpper()}" : word;
-            });
-        }).ToList();
-    }
-    
-    private static Dictionary<LengthCategory, List<string>> GroupByLength(List<string> strings)
-    {
-        return strings.GroupBy(GetLengthCategory)
-            .ToDictionary(g => g.Key, g => g.ToList());
-    }
-
-    private static LengthCategory GetLengthCategory(string input)
-    {
-        var wordCount = WordPattern.Matches(input).Count;
-
-        return wordCount switch
-        {
-            < 10 => LengthCategory.Short,
-            < 20 => LengthCategory.Medium,
-            _ => LengthCategory.Long
-        };
-    }
-    
-    public enum LengthCategory
-    {
-        Short,
-        Medium,
-        Long
-    }
-
 }

@@ -54,4 +54,24 @@ public class DadJokeServicesTests
         // Assert
         Assert.ThrowsAsync<JokeNotFoundException>(async () => await jokeService.GetRandomJokeAsync());
     }
+
+    [Test]
+    public async Task GivenNonNullResponse_Search_ShouldReturnTokenizedJoke()
+    {
+        // Arrange
+        
+        // Act
+        
+        // Assert
+    }
+    
+    [Test]
+    public async Task GivenNullResponse_Search_ShouldThrow()
+    {
+        // Arrange
+        
+        // Act
+        
+        // Assert
+    }
 }

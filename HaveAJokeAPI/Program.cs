@@ -1,6 +1,7 @@
 using HaveAJokeAPI.Configuration;
 using HaveAJokeAPI.Repositories;
 using HaveAJokeAPI.Services;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,8 +38,7 @@ app.MapGet("/random", async ([FromKeyedServices("joke-service")] IJokeService jo
     {
         try
         {
-            var joke = await jokeService.GetRandomJokeAsync();
-            return Results.Ok(joke);
+            return Results.Ok(await jokeService.GetRandomJokeAsync());
         }
         catch (Exception ex)
         {
@@ -48,12 +48,11 @@ app.MapGet("/random", async ([FromKeyedServices("joke-service")] IJokeService jo
     .WithName("RandomJoke")
     .WithOpenApi();
 
-app.MapGet("/search", async ([FromKeyedServices("joke-service")] IJokeService jokeService) =>
+app.MapGet("/search/{page}/{limit}/{token}", async ([FromKeyedServices("joke-service")] IJokeService jokeService, [FromRoute] int page, [FromRoute] int limit, [FromRoute] string token) =>
     {
         try
         {
-            var jokes = await jokeService.SearchJokesAsync(1,30, "man bar");
-            return Results.Ok(jokes);
+            return Results.Ok(await jokeService.SearchJokesAsync(page, limit, token));
         }
         catch (Exception ex)
         {
