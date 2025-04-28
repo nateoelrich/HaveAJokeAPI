@@ -53,8 +53,7 @@ public class JokeTokenizerTests
         var result = JokeTokenizer.TransformJokes(jokes, tokens);
 
         var updatedJoke = result[JokeLengthCategory.Short].First();
-        updatedJoke.ShouldContain("CAT");
-        updatedJoke.ShouldContain("DOG");
+        updatedJoke.ShouldBe("I have a CAT and a DOG.");
     }
 
     [Test]
@@ -69,8 +68,7 @@ public class JokeTokenizerTests
         var result = JokeTokenizer.TransformJokes(jokes, tokens);
 
         var updatedJoke = result[JokeLengthCategory.Short].First();
-        updatedJoke.ShouldContain("DOG");
-        updatedJoke.ShouldContain("CAT");
+        updatedJoke.ShouldBe("My DOG is cute. I love my CAT.");
     }
 
     [Test]
