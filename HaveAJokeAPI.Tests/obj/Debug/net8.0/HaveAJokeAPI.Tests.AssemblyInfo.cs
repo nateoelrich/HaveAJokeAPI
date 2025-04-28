@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HaveAJokeAPI.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d217a129779a94273b37c25a47ba4b71cb8a573a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+308cf13f9c74663ee0e33c1aa932bf51b0c2ffb2")]
 [assembly: System.Reflection.AssemblyProductAttribute("HaveAJokeAPI.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HaveAJokeAPI.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

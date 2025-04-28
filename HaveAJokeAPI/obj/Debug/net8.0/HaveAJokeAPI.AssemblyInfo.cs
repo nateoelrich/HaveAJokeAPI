@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HaveAJokeAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0cac24b65350cc6b055ca49344ba400d52b473b1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+308cf13f9c74663ee0e33c1aa932bf51b0c2ffb2")]
 [assembly: System.Reflection.AssemblyProductAttribute("HaveAJokeAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HaveAJokeAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
